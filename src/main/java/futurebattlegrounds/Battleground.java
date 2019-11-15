@@ -1,29 +1,26 @@
 package futurebattlegrounds;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
-import javax.vecmath.Vector2d;
 
 import io.micronaut.scheduling.annotation.Scheduled;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
 @Singleton
 public class Battleground {
     private ArrayList<Ship> ships = new ArrayList<>();
     private PublishSubject<ArrayList<Ship>> observableShips;
+    private double timestamp = 0;
 
     @PostConstruct
     public void initialize() {
         observableShips = PublishSubject.create();
 
-        Ship ship = new Ship();
-        ship.setMovementVector(new Vector2d(1, 0));
+        Ship ship = new Ship(this, null);
         addShip(ship);
     }
 
@@ -37,10 +34,26 @@ public class Battleground {
 
     private void tick(double seconds) {
         getShips().forEach(ship -> ship.tick(seconds));
+        timestamp = timestamp + seconds;
     }
 
-    public void addShip(Ship ship) {
+    public Ship addShip() {
+        Ship ship = new Ship(this, null);
         this.getShips().add(ship);
+        return ship;
+    }
+
+    public Ship addShip(Ship ship) {
+        this.getShips().add(ship);
+        return ship;
+    }
+
+    public Optional<Ship> getShip(UUID uuid) {
+        return getShips().stream().filter(ship -> ship.getUUID().equals(uuid)).findFirst();
+    }
+
+    public Optional<Ship> getShip(String uuid) {
+        return getShips().stream().filter(ship -> ship.getUUID().toString().equals(uuid)).findFirst();
     }
 
     @Scheduled(fixedDelay = "20ms")
@@ -51,6 +64,20 @@ public class Battleground {
 
     public PublishSubject<ArrayList<Ship>> getObservableShips() {
         return observableShips;
+    }
+
+    /**
+     * @return the current simulation timestamp
+     */
+    public double getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * @return the timestamp plus the tick rate
+     */
+    public double getTimestampMax() {
+        return timestamp + 0.2;
     }
 
 }
