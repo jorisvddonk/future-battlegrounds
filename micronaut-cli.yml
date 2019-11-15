@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: futurebattlegrounds
+---
+testFramework: junit
+sourceLanguage: java
