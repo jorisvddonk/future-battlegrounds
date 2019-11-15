@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "futurebattlegroundsRPC";
+option java_outer_classname = "FutureBattlegroundsProto";
+option objc_class_prefix = "FB";
+
+package futurebattlegroundsRPC;
+
+service Battlegrounds {
+    rpc getState (Empty) returns (StateReply) {}
+}
+
+message Empty {}
+
+message Position {
+    required double x = 1;
+    required double y = 2;
+}
+
+message Ship {
+    Position position = 1;
+}
+
+message StateReply {
+  repeated Ship ships = 1;
+}
