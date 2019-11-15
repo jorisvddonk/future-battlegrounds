@@ -1,6 +1,19 @@
 micronaut:
   application:
     name: futurebattlegrounds
+  graphql:
+    enabled: true
+    path: /graphql
+    graphiql: # does not work?
+      enabled: true
+      version: 0.13.2
+      path: /graphiql
+      template-path: classpath:graphiql/index.html
+      template-parameters:
+      page-title: GraphiQL
+  server:
+    cors:
+      enabled: true
   router:
     static-resources:
       default:

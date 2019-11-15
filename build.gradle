@@ -46,6 +46,7 @@ dependencies {
     compile 'io.micronaut.grpc:micronaut-grpc-runtime:1.0.1'
     compile group: 'io.reactivex', name: 'rxjava', version: '1.3.8'
     compile group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.0.10'
+    compile 'io.micronaut.graphql:micronaut-graphql:1.2.1'
 
     // TODO: fix?
     // developmentOnly "io.micronaut:micronaut-runtime-osx"

@@ -1,0 +1,18 @@
+type Query {
+  ship(uuid: String): Ship
+  ships: [Ship]!
+}
+
+type Ship {
+  uuid: String
+  position: Vector2d
+  movementVector: Vector2d
+  rotationVector: Vector2d
+  iff: String
+  thrusting: Boolean
+}
+
+type Vector2d {
+  x: Float
+  y: Float
+}
