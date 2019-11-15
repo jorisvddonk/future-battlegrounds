@@ -1,13 +1,11 @@
 package futurebattlegrounds;
 
-import java.beans.JavaBean;
 import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.UUID;
 
 import javax.vecmath.Vector2d;
 
-@JavaBean
 public class Ship implements Movable, HasLifetime {
     private final Vector2d position;
     private Vector2d movementVector;

@@ -1,10 +1,8 @@
 package futurebattlegrounds;
 
-import java.beans.JavaBean;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
-@JavaBean
 public class RequestManager<T extends TimedRequest> {
     private Battleground battleground;
     private final ArrayList<T> requests;
