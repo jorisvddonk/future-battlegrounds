@@ -63,4 +63,5 @@ message Ship {
 
 message StateReply {
   repeated Ship ships = 1;
+  double timestamp = 2;
 }

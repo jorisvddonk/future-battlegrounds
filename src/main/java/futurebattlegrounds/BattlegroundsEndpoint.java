@@ -24,8 +24,9 @@ public class BattlegroundsEndpoint extends BattlegroundsGrpc.BattlegroundsImplBa
         ships.forEach(ship -> shipBuilder.setPosition(futurebattlegroundsRPC.Position.newBuilder()
                 .setX(ship.getPosition().getX()).setY(ship.getPosition().getY()).build()).build());
 
-        StateReply reply = StateReply.newBuilder().addShips(shipBuilder.build()).build();
-        return reply;
+        StateReply.Builder reply = StateReply.newBuilder().addShips(shipBuilder.build());
+        reply.setTimestamp(battleground.getTimestamp());
+        return reply.build();
     }
 
     @Override
