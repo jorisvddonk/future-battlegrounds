@@ -3,7 +3,6 @@ package futurebattlegrounds;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-import javax.vecmath.Vector2d;
 
 import futurebattlegrounds.Battleground;
 import futurebattlegrounds.Ship;

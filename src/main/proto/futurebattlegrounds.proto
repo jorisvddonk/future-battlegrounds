@@ -9,6 +9,7 @@ package futurebattlegroundsRPC;
 
 service Battlegrounds {
     rpc getState (Empty) returns (StateReply) {}
+    rpc streamState (Empty) returns (stream StateReply) {}
 }
 
 message Empty {}
