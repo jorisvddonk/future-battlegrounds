@@ -10,6 +10,44 @@ package futurebattlegroundsRPC;
 service Battlegrounds {
     rpc getState (Empty) returns (StateReply) {}
     rpc streamState (Empty) returns (stream StateReply) {}
+
+    rpc spawnShip (ShipSpawnRequest) returns (ShipSpawnReply) {}
+    rpc thrust (ThrustRequest) returns (CommandResponse) {}
+    rpc rotate (RotateRequest) returns (CommandResponse) {}
+    rpc keepalive (Empty) returns (CommandResponse) {}
+}
+
+enum CommandStatus {
+    OK = 0;
+    ERROR = 1;
+}
+
+message ShipSpawnRequest {
+    string iff = 1;
+}
+
+message ShipSpawnReply {
+    string uuid = 1;
+}
+
+message CommandResponse {
+    CommandStatus resultCode = 1;
+}
+
+message ThrustRequest {
+    string uuid = 1;
+    TimeOptions timeOptions = 2;
+}
+
+message RotateRequest {
+    string uuid = 1;
+    TimeOptions timeOptions = 2;
+    int32 direction = 3;
+}
+
+message TimeOptions {
+    double activationTime = 1;
+    double durationTime = 2;
 }
 
 message Empty {}
