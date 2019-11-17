@@ -2,10 +2,12 @@ package futurebattlegrounds;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
+import javax.vecmath.Vector2d;
 
 import io.micronaut.scheduling.annotation.Scheduled;
 import io.reactivex.subjects.PublishSubject;
@@ -15,13 +17,11 @@ public class Battleground {
     private ArrayList<Ship> ships = new ArrayList<>();
     private PublishSubject<ArrayList<Ship>> observableShips;
     private double timestamp = 0;
+    private Random random = new Random();
 
     @PostConstruct
     public void initialize() {
         observableShips = PublishSubject.create();
-
-        Ship ship = new Ship(this, null);
-        addShip(ship);
     }
 
     public ArrayList<Ship> getShips() {
@@ -39,6 +39,12 @@ public class Battleground {
 
     public Ship addShip() {
         Ship ship = new Ship(this, null);
+        int r = random.nextInt(360);
+        int d = 500;
+        Vector2d v = new Vector2d(Math.cos(r) * d, Math.sin(r) * d);
+        ship.setPosition(v);
+        v.scale(-1);
+        ship.setRotation(v);
         this.getShips().add(ship);
         return ship;
     }

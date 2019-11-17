@@ -69,6 +69,15 @@ public class Ship implements Movable, HasLifetime {
         return this.position;
     }
 
+    protected void setPosition(Vector2d position) {
+        this.position.set(position);
+    }
+
+    protected void setRotation(Vector2d rotation) {
+        this.rotationVector.set(rotation);
+        this.rotationVector.normalize();
+    }
+
     public UUID getUUID() {
         return UUID;
     }
