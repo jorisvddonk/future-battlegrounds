@@ -22,13 +22,13 @@ public class BattlegroundController {
     @Inject
     private Battleground battleground;
 
-    @Get(produces = MediaType.APPLICATION_JSON)
-    public ArrayList<Ship> index() {
+    @Get(value = "/ships", produces = MediaType.APPLICATION_JSON)
+    public ArrayList<Ship> ships() {
         return battleground.getShips();
     }
 
-    @Get(value = "/stream", produces = MediaType.APPLICATION_JSON_STREAM)
-    public Flowable<ArrayList<Ship>> stream() {
+    @Get(value = "/ships/stream", produces = MediaType.APPLICATION_JSON_STREAM)
+    public Flowable<ArrayList<Ship>> shipsStream() {
         return battleground.getObservableShips().toFlowable(BackpressureStrategy.DROP);
     }
 
