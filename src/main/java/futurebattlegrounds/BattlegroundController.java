@@ -56,4 +56,13 @@ public class BattlegroundController {
         }
         return ship;
     }
+
+    @Post(value = "/ships/{uuid}/actionstate", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
+    public Optional<Ship> actionstate(@PathVariable String uuid, @Body ShipActionState actionState) {
+        Optional<Ship> ship = battleground.getShip(uuid);
+        if (ship.isPresent()) {
+            ship.get().setActionState(actionState);
+        }
+        return ship;
+    }
 }
