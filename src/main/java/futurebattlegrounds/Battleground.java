@@ -28,20 +28,20 @@ public class Battleground {
         return ships;
     }
 
-    public void setShips(ArrayList<Ship> ships) {
+    public void setShips(final ArrayList<Ship> ships) {
         this.ships = ships;
     }
 
-    private void tick(double seconds) {
+    private void tick(final double seconds) {
         getShips().forEach(ship -> ship.tick(seconds));
         timestamp = timestamp + seconds;
     }
 
     public Ship addShip() {
-        Ship ship = new Ship(this, null);
-        int r = random.nextInt(360);
-        int d = 500;
-        Vector2d v = new Vector2d(Math.cos(r) * d, Math.sin(r) * d);
+        final Ship ship = new Ship(this, null);
+        final int r = random.nextInt(360);
+        final int d = 500;
+        final Vector2d v = new Vector2d(Math.cos(r) * d, Math.sin(r) * d);
         ship.setPosition(v);
         v.scale(-1);
         ship.setRotation(v);
@@ -49,16 +49,16 @@ public class Battleground {
         return ship;
     }
 
-    public Ship addShip(Ship ship) {
+    public Ship addShip(final Ship ship) {
         this.getShips().add(ship);
         return ship;
     }
 
-    public Optional<Ship> getShip(UUID uuid) {
+    public Optional<Ship> getShip(final UUID uuid) {
         return getShips().stream().filter(ship -> ship.getUUID().equals(uuid)).findFirst();
     }
 
-    public Optional<Ship> getShip(String uuid) {
+    public Optional<Ship> getShip(final String uuid) {
         return getShips().stream().filter(ship -> ship.getUUID().toString().equals(uuid)).findFirst();
     }
 
