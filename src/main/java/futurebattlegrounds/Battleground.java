@@ -16,12 +16,14 @@ import io.reactivex.subjects.PublishSubject;
 public class Battleground {
     private ArrayList<Ship> ships = new ArrayList<>();
     private PublishSubject<ArrayList<Ship>> observableShips;
+    private PublishSubject<Stage> observableStage;
     private double timestamp = 0;
     private Random random = new Random();
 
     @PostConstruct
     public void initialize() {
         observableShips = PublishSubject.create();
+        observableStage = PublishSubject.create();
     }
 
     public ArrayList<Ship> getShips() {
@@ -35,6 +37,35 @@ public class Battleground {
     private void tick(final double seconds) {
         getShips().forEach(ship -> ship.tick(seconds));
         timestamp = timestamp + seconds;
+    }
+
+    public class Stage {
+        public final ArrayList<Ship> ships;
+        public final double timestamp;
+
+        Stage(final ArrayList<Ship> ships, final double timestamp) {
+            this.ships = ships;
+            this.timestamp = timestamp;
+        }
+
+        /**
+         * @return the ships
+         */
+        public ArrayList<Ship> getShips() {
+            return ships;
+        }
+
+        /**
+         * @return the timestamp
+         */
+        public double getTimestamp() {
+            return timestamp;
+        }
+    }
+
+    public Stage getStage() {
+        // todo: improve perf by not returning an new object every time?
+        return new Stage(this.getShips(), this.getTimestampMax());
     }
 
     public Ship addShip() {
@@ -66,10 +97,15 @@ public class Battleground {
     void autoTick() {
         this.tick(0.1);
         observableShips.onNext(this.getShips());
+        observableStage.onNext(this.getStage());
     }
 
     public PublishSubject<ArrayList<Ship>> getObservableShips() {
         return observableShips;
+    }
+
+    public PublishSubject<Stage> getObservableStage() {
+        return observableStage;
     }
 
     /**
