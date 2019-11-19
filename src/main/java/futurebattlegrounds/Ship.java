@@ -48,6 +48,10 @@ public class Ship extends BaseMovable {
                 v.scale(this.actionState.getThrust());
             }
             this.movementVector.add(v);
+            if (this.movementVector.length() > Constants.SHIP_MAX_SPEED) { // clamp!
+                this.movementVector.normalize();
+                this.movementVector.scale(Constants.SHIP_MAX_SPEED);
+            }
         }
 
         if (this.isRotating()) {
