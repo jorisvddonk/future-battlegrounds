@@ -15,8 +15,7 @@ import io.reactivex.subjects.PublishSubject;
 @Singleton
 public class Battleground {
     private ArrayList<Ship> ships = new ArrayList<>();
-    private PublishSubject<ArrayList<Ship>> observableShips;
-    private PublishSubject<Stage> observableStage;
+    private ArrayList<Bullet> bullets = new ArrayList<>();
     private double timestamp = 0;
     private Random random = new Random();
 
@@ -120,6 +119,10 @@ public class Battleground {
      */
     public double getTimestampMax() {
         return timestamp + 0.2;
+    }
+
+    protected void shoot(Bullet b) {
+        this.bullets.add(b);
     }
 
 }

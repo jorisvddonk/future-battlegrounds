@@ -61,12 +61,17 @@ public class Ship extends BaseMovable {
             this.rotationVector.set(r);
         }
 
-        final Vector2d cloned = (Vector2d) this.movementVector.clone();
-        cloned.scale(seconds);
-        this.position.add(cloned);
-
-        this.lifetime -= seconds;
-    }
+        if (this.isShooting() && this.shipState.canReduceBattery(5.0)) {
+            Bullet b = new Bullet();
+            b.setPosition(this.position);
+            Vector2d v = (Vector2d) this.movementVector.clone();
+            Vector2d rV = (Vector2d) this.rotationVector.clone();
+            rV.normalize();
+            rV.scale(5.0);
+            v.add(rV);
+            b.setMovementVector(v);
+            this.battleground.shoot(b);
+        }
 
         super.tick(seconds);
     }
