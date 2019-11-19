@@ -17,29 +17,27 @@ public class BattlegroundsEndpoint extends BattlegroundsGrpc.BattlegroundsImplBa
     }
 
     private futurebattlegroundsRPC.Battleground getBattleground(futurebattlegrounds.Battleground battleground) {
-        futurebattlegroundsRPC.Ship.Builder shipBuilder = futurebattlegroundsRPC.Ship.newBuilder();
+        futurebattlegroundsRPC.Battleground.Builder reply = futurebattlegroundsRPC.Battleground.newBuilder();
+
         battleground.getShips()
-                .forEach(ship -> shipBuilder
+                .forEach(ship -> reply.addShips(futurebattlegroundsRPC.Ship.newBuilder()
                         .setPosition(futurebattlegroundsRPC.Vector2d.newBuilder().setX(ship.getPosition().getX())
                                 .setY(ship.getPosition().getY()).build())
                         .setMovementVector(futurebattlegroundsRPC.Vector2d.newBuilder()
                                 .setX(ship.getMovementVector().getX()).setY(ship.getMovementVector().getY()).build())
                         .setRotationVector(futurebattlegroundsRPC.Vector2d.newBuilder()
                                 .setX(ship.getRotationVector().getX()).setY(ship.getRotationVector().getY()).build())
-                        .setBattery(ship.getBattery()).setHull(ship.getHull()).setIFF(ship.getIFF()).build());
+                        .setBattery(ship.getBattery()).setHull(ship.getHull()).setIFF(ship.getIFF()).build()));
 
-        futurebattlegroundsRPC.Bullet.Builder bulletBuilder = futurebattlegroundsRPC.Bullet.newBuilder();
-        battleground.getBullets().forEach(bullet -> bulletBuilder
+        battleground.getBullets().forEach(bullet -> reply.addBullets(futurebattlegroundsRPC.Bullet.newBuilder()
                 .setPosition(futurebattlegroundsRPC.Vector2d.newBuilder().setX(bullet.getPosition().getX())
                         .setY(bullet.getPosition().getY()).build())
                 .setMovementVector(futurebattlegroundsRPC.Vector2d.newBuilder().setX(bullet.getMovementVector().getX())
                         .setY(bullet.getMovementVector().getY()).build())
                 .setRotationVector(futurebattlegroundsRPC.Vector2d.newBuilder().setX(bullet.getRotationVector().getX())
                         .setY(bullet.getRotationVector().getY()).build())
-                .build());
+                .build()));
 
-        futurebattlegroundsRPC.Battleground.Builder reply = futurebattlegroundsRPC.Battleground.newBuilder()
-                .addShips(shipBuilder.build()).addBullets(bulletBuilder.build());
         reply.setTimestamp(battleground.getTimestamp());
         return reply.build();
     }
