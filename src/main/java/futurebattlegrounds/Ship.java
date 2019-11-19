@@ -14,13 +14,9 @@ public class Ship extends BaseMovable {
     private ShipState shipState;
     private Battleground battleground;
 
-    @Deprecated
-    private RequestManager<ThrustRequest> thrustRequestManager;
-
     public Ship(Battleground battleground, final String IFF) {
         super();
         this.battleground = battleground;
-        this.thrustRequestManager = new RequestManager<>(battleground);
         if (IFF != null) {
             this.IFF = IFF;
         } else {
@@ -91,17 +87,12 @@ public class Ship extends BaseMovable {
         return IFF;
     }
 
-    public void thrustRequest(ThrustRequest request) {
-        this.thrustRequestManager.addRequest(request);
-    }
-
     public void setActionState(ShipActionState actionState) {
         this.actionState = actionState;
     }
 
     public boolean isThrusting() {
-        return this.actionState.getThrust() > 0.01 || this.actionState.getThrust() < 0.01
-                || this.thrustRequestManager.getActiveRequests().count() > 0;
+        return this.actionState.getThrust() > 0.01 || this.actionState.getThrust() < 0.01;
     }
 
     public boolean isRotating() {
