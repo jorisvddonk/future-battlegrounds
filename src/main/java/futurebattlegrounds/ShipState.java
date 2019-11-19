@@ -4,11 +4,13 @@ public class ShipState {
   private double hull;
   private double battery;
   private double maxBattery;
+  private double batteryCooldown;
 
   public ShipState(double hull, double battery) {
     this.hull = hull;
     this.battery = battery;
     this.maxBattery = battery;
+    this.batteryCooldown = 0;
   }
 
   /**
@@ -37,8 +39,9 @@ public class ShipState {
   }
 
   protected boolean canReduceBattery(double battery) {
-    if (this.getBattery() - battery > 0) {
+    if (this.getBattery() - battery > 0 && this.batteryCooldown <= 0) {
       this.battery -= battery;
+      this.batteryCooldown = Constants.SHIP_BATTERY_COOLDOWN;
       return true;
     }
     return false;
@@ -46,6 +49,9 @@ public class ShipState {
 
   protected void tick(double seconds) {
     this.battery += seconds * Constants.SHIP_BATTERY_RECHARGE_PER_SECOND;
+    if (this.batteryCooldown > 0) {
+      this.batteryCooldown -= seconds;
+    }
   }
 
 }
