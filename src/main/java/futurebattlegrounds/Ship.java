@@ -6,24 +6,21 @@ import java.util.UUID;
 
 import javax.vecmath.Vector2d;
 
-public class Ship implements Movable, HasLifetime {
-    private final Vector2d position;
-    private Vector2d movementVector;
-    private final Vector2d rotationVector;
+public class Ship extends BaseMovable {
     private final String IFF;
     private final UUID UUID;
-    private double lifetime;
     private final Vector2d thrust = new Vector2d(0, 1);
     private ShipActionState actionState;
+    private ShipState shipState;
+    private Battleground battleground;
 
     @Deprecated
     private RequestManager<ThrustRequest> thrustRequestManager;
 
     public Ship(Battleground battleground, final String IFF) {
+        super();
+        this.battleground = battleground;
         this.thrustRequestManager = new RequestManager<>(battleground);
-        this.position = new Vector2d(0, 0);
-        this.movementVector = new Vector2d(0, 0);
-        this.rotationVector = new Vector2d(0, 1);
         if (IFF != null) {
             this.IFF = IFF;
         } else {
@@ -33,6 +30,7 @@ public class Ship implements Movable, HasLifetime {
         }
         this.UUID = java.util.UUID.randomUUID();
 
+        this.shipState = new ShipState(100, 60);
         try {
             this.actionState = new ShipActionState(0, 0, false);
         } catch (Exception e) {
@@ -70,35 +68,7 @@ public class Ship implements Movable, HasLifetime {
         this.lifetime -= seconds;
     }
 
-    @Override
-    public void setMovementVector(final Vector2d vector) {
-        this.movementVector = vector;
-    }
-
-    @Override
-    public Vector2d getMovementVector() {
-        return this.movementVector;
-    }
-
-    /**
-     * @return the rotationVector
-     */
-    public Vector2d getRotationVector() {
-        return rotationVector;
-    }
-
-    @Override
-    public Vector2d getPosition() {
-        return this.position;
-    }
-
-    protected void setPosition(Vector2d position) {
-        this.position.set(position);
-    }
-
-    protected void setRotation(Vector2d rotation) {
-        this.rotationVector.set(rotation);
-        this.rotationVector.normalize();
+        super.tick(seconds);
     }
 
     public UUID getUUID() {
@@ -107,16 +77,6 @@ public class Ship implements Movable, HasLifetime {
 
     public String getIFF() {
         return IFF;
-    }
-
-    @Override
-    public double getRemainingLifetime() {
-        return this.lifetime;
-    }
-
-    @Override
-    public void keepAlive() {
-        this.lifetime = Constants.KEEPALIVETIME;
     }
 
     public void thrustRequest(ThrustRequest request) {
@@ -134,6 +94,18 @@ public class Ship implements Movable, HasLifetime {
 
     public boolean isRotating() {
         return this.actionState.getRotate() > 0.01 || this.actionState.getRotate() < 0.01;
+    }
+
+    public boolean isShooting() {
+        return this.actionState.getShooting();
+    }
+
+    public double getHull() {
+        return this.shipState.getHull();
+    }
+
+    public double getBattery() {
+        return this.shipState.getBattery();
     }
 
 }
