@@ -1,11 +1,8 @@
 package futurebattlegrounds;
 
-import java.util.ArrayList;
-
 import javax.inject.Singleton;
 import futurebattlegroundsRPC.BattlegroundsGrpc;
 import futurebattlegroundsRPC.Empty;
-import futurebattlegroundsRPC.StateReply;
 import io.grpc.stub.StreamObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -13,31 +10,41 @@ import io.reactivex.disposables.Disposable;
 @Singleton
 public class BattlegroundsEndpoint extends BattlegroundsGrpc.BattlegroundsImplBase {
 
-    private final Battleground battleground;
+    private final futurebattlegrounds.Battleground battleground;
 
-    public BattlegroundsEndpoint(Battleground battleground) {
+    public BattlegroundsEndpoint(futurebattlegrounds.Battleground battleground) {
         this.battleground = battleground;
     }
 
-    private StateReply getStateReply(ArrayList<Ship> ships) {
+    private futurebattlegroundsRPC.Battleground getBattleground(futurebattlegrounds.Battleground battleground) {
         futurebattlegroundsRPC.Ship.Builder shipBuilder = futurebattlegroundsRPC.Ship.newBuilder();
-        ships.forEach(ship -> shipBuilder.setPosition(futurebattlegroundsRPC.Position.newBuilder()
-                .setX(ship.getPosition().getX()).setY(ship.getPosition().getY()).build()).build());
+        battleground.getShips()
+                .forEach(ship -> shipBuilder
+                        .setPosition(futurebattlegroundsRPC.Vector2d.newBuilder().setX(ship.getPosition().getX())
+                                .setY(ship.getPosition().getY()).build())
+                        .setMovementVector(futurebattlegroundsRPC.Vector2d.newBuilder()
+                                .setX(ship.getMovementVector().getX()).setY(ship.getMovementVector().getY()).build())
+                        .setRotationVector(futurebattlegroundsRPC.Vector2d.newBuilder()
+                                .setX(ship.getRotationVector().getX()).setY(ship.getRotationVector().getY()).build())
+                        .setBattery(ship.getBattery()).setHull(ship.getHull()).setIFF(ship.getIFF()).build());
 
-        StateReply.Builder reply = StateReply.newBuilder().addShips(shipBuilder.build());
+        futurebattlegroundsRPC.Battleground.Builder reply = futurebattlegroundsRPC.Battleground.newBuilder()
+                .addShips(shipBuilder.build());
         reply.setTimestamp(battleground.getTimestamp());
         return reply.build();
     }
 
     @Override
-    public void getState(futurebattlegroundsRPC.Empty request, StreamObserver<StateReply> responseObserver) {
-        responseObserver.onNext(getStateReply(battleground.getShips()));
+    public void getBattleground(futurebattlegroundsRPC.Empty request,
+            StreamObserver<futurebattlegroundsRPC.Battleground> responseObserver) {
+        responseObserver.onNext(getBattleground(battleground));
         responseObserver.onCompleted();
     }
 
     @Override
-    public void streamState(Empty request, StreamObserver<StateReply> responseObserver) {
-        battleground.getObservable().subscribe(new Observer<Battleground>() {
+    public void streamBattleground(Empty request,
+            StreamObserver<futurebattlegroundsRPC.Battleground> responseObserver) {
+        battleground.getObservable().subscribe(new Observer<futurebattlegrounds.Battleground>() {
             Disposable disposable;
 
             @Override
@@ -46,10 +53,9 @@ public class BattlegroundsEndpoint extends BattlegroundsGrpc.BattlegroundsImplBa
             }
 
             @Override
-            public void onNext(Battleground t) {
+            public void onNext(futurebattlegrounds.Battleground t) {
                 try {
-                    // TODO: FIX ME AGAIN!
-                    // responseObserver.onNext(getStateReply(t));
+                    responseObserver.onNext(getBattleground(t));
                 } catch (Exception e) {
                     // was probably completed already; dispose the observable!
                     if (this.disposable != null && this.disposable.isDisposed() == false) {

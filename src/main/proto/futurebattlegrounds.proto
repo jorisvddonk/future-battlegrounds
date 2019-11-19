@@ -8,60 +8,46 @@ option objc_class_prefix = "FB";
 package futurebattlegroundsRPC;
 
 service Battlegrounds {
-    rpc getState (Empty) returns (StateReply) {}
-    rpc streamState (Empty) returns (stream StateReply) {}
+    rpc getBattleground (Empty) returns (Battleground) {}
+    rpc streamBattleground (Empty) returns (stream Battleground) {}
 
     rpc spawnShip (ShipSpawnRequest) returns (ShipSpawnReply) {}
-    rpc thrust (ThrustRequest) returns (CommandResponse) {}
-    rpc rotate (RotateRequest) returns (CommandResponse) {}
-    rpc keepalive (Empty) returns (CommandResponse) {}
-}
-
-enum CommandStatus {
-    OK = 0;
-    ERROR = 1;
 }
 
 message ShipSpawnRequest {
-    string iff = 1;
+    string IFF = 1;
 }
 
 message ShipSpawnReply {
-    string uuid = 1;
-}
-
-message CommandResponse {
-    CommandStatus resultCode = 1;
-}
-
-message ThrustRequest {
-    string uuid = 1;
-    TimeOptions timeOptions = 2;
-}
-
-message RotateRequest {
-    string uuid = 1;
-    TimeOptions timeOptions = 2;
-    int32 direction = 3;
-}
-
-message TimeOptions {
-    double activationTime = 1;
-    double durationTime = 2;
+    string UUID = 1;
 }
 
 message Empty {}
 
-message Position {
+message Vector2d {
     double x = 1;
     double y = 2;
 }
 
 message Ship {
-    Position position = 1;
+    Vector2d position = 1;
+    Vector2d movementVector = 2;
+    Vector2d rotationVector = 3;
+    double remainingLifetime = 4;
+    string IFF = 5;
+    double hull = 6;
+    double battery = 7;
 }
 
-message StateReply {
+message Bullet {
+    Vector2d position = 1;
+    Vector2d movementVector = 2;
+    Vector2d rotationVector = 3;
+    double remainingLifetime = 4;
+}
+
+message Battleground {
   repeated Ship ships = 1;
-  double timestamp = 2;
+  repeated Bullet bullets = 2;
+  double timestamp = 3;
 }
