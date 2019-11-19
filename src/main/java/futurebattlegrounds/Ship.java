@@ -30,7 +30,7 @@ public class Ship extends BaseMovable {
         }
         this.UUID = java.util.UUID.randomUUID();
 
-        this.shipState = new ShipState(100, 60);
+        this.shipState = new ShipState(Constants.SHIP_HULL, Constants.SHIP_BATTERY);
         try {
             this.actionState = new ShipActionState(0, 0, false);
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class Ship extends BaseMovable {
     public void tick(final double seconds) {
         if (this.isThrusting()) {
             final Vector2d v = ((Vector2d) this.rotationVector.clone()); // TODO: directional thrust support?
-            v.scale(this.thrust.length() * seconds * 2.0);
+            v.scale(this.thrust.length() * seconds * Constants.SHIP_THRUST);
             if (this.actionState.getThrust() > 0.01 || this.actionState.getThrust() < 0.01) {
                 v.scale(this.actionState.getThrust());
             }
@@ -51,7 +51,8 @@ public class Ship extends BaseMovable {
         }
 
         if (this.isRotating()) {
-            float deg_delta_r = this.actionState.getRotate() * (float) seconds * 20.0f * (float) (Math.PI / 180.0);
+            float deg_delta_r = this.actionState.getRotate() * (float) seconds * Constants.SHIP_ROTATE_DEG_PER_SECOND
+                    * (float) (Math.PI / 180.0);
             Vector2d r = new Vector2d(
                     (this.rotationVector.getX() * Math.cos(deg_delta_r))
                             - (this.rotationVector.getY() * Math.sin(deg_delta_r)),
@@ -61,13 +62,13 @@ public class Ship extends BaseMovable {
             this.rotationVector.set(r);
         }
 
-        if (this.isShooting() && this.shipState.canReduceBattery(5.0)) {
+        if (this.isShooting() && this.shipState.canReduceBattery(Constants.SHIP_SHOT_BATTERY_USAGE)) {
             Bullet b = new Bullet();
             b.setPosition(this.position);
             Vector2d v = (Vector2d) this.movementVector.clone();
             Vector2d rV = (Vector2d) this.rotationVector.clone();
             rV.normalize();
-            rV.scale(5.0);
+            rV.scale(Constants.SHIP_SHOT_SPEED);
             v.add(rV);
             b.setMovementVector(v);
             this.battleground.shoot(b);
