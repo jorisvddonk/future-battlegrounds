@@ -28,8 +28,18 @@ public class BattlegroundsEndpoint extends BattlegroundsGrpc.BattlegroundsImplBa
                                 .setX(ship.getRotationVector().getX()).setY(ship.getRotationVector().getY()).build())
                         .setBattery(ship.getBattery()).setHull(ship.getHull()).setIFF(ship.getIFF()).build());
 
+        futurebattlegroundsRPC.Bullet.Builder bulletBuilder = futurebattlegroundsRPC.Bullet.newBuilder();
+        battleground.getBullets().forEach(bullet -> bulletBuilder
+                .setPosition(futurebattlegroundsRPC.Vector2d.newBuilder().setX(bullet.getPosition().getX())
+                        .setY(bullet.getPosition().getY()).build())
+                .setMovementVector(futurebattlegroundsRPC.Vector2d.newBuilder().setX(bullet.getMovementVector().getX())
+                        .setY(bullet.getMovementVector().getY()).build())
+                .setRotationVector(futurebattlegroundsRPC.Vector2d.newBuilder().setX(bullet.getRotationVector().getX())
+                        .setY(bullet.getRotationVector().getY()).build())
+                .build());
+
         futurebattlegroundsRPC.Battleground.Builder reply = futurebattlegroundsRPC.Battleground.newBuilder()
-                .addShips(shipBuilder.build());
+                .addShips(shipBuilder.build()).addBullets(bulletBuilder.build());
         reply.setTimestamp(battleground.getTimestamp());
         return reply.build();
     }
