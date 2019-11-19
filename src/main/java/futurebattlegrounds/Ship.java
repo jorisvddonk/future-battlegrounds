@@ -74,6 +74,8 @@ public class Ship extends BaseMovable {
             this.battleground.shoot(b);
         }
 
+        this.shipState.tick(seconds);
+
         super.tick(seconds);
     }
 

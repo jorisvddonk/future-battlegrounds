@@ -8,4 +8,5 @@ public class Constants {
     public static final double SHIP_SHOT_SPEED = 100.0;
     public static final double SHIP_HULL = 100;
     public static final double SHIP_BATTERY = 60;
+    public static final double SHIP_BATTERY_RECHARGE_PER_SECOND = 20;
 }

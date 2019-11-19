@@ -45,7 +45,7 @@ public class ShipState {
   }
 
   protected void tick(double seconds) {
-    this.battery += seconds * 20.0; // 20 battery regained per second
+    this.battery += seconds * Constants.SHIP_BATTERY_RECHARGE_PER_SECOND;
   }
 
 }
