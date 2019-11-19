@@ -52,6 +52,9 @@ public class ShipState {
     if (this.batteryCooldown > 0) {
       this.batteryCooldown -= seconds;
     }
+    if (this.battery > this.maxBattery) {
+      this.battery = this.maxBattery;
+    }
   }
 
 }
