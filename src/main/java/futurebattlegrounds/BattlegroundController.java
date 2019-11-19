@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import futurebattlegrounds.Battleground;
 import futurebattlegrounds.Ship;
-import futurebattlegrounds.Battleground.Stage;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
@@ -28,19 +27,14 @@ public class BattlegroundController {
         return battleground.getShips();
     }
 
-    @Get(value = "/ships/stream", produces = MediaType.APPLICATION_JSON_STREAM)
-    public Flowable<ArrayList<Ship>> shipsStream() {
-        return battleground.getObservableShips().toFlowable(BackpressureStrategy.DROP);
+    @Get(value = "/", produces = MediaType.APPLICATION_JSON)
+    public Battleground battleground() {
+        return battleground;
     }
 
-    @Get(value = "/stage", produces = MediaType.APPLICATION_JSON)
-    public Stage stage() {
-        return battleground.getStage();
-    }
-
-    @Get(value = "/stage/stream", produces = MediaType.APPLICATION_JSON_STREAM)
-    public Flowable<Stage> stageStream() {
-        return battleground.getObservableStage().toFlowable(BackpressureStrategy.DROP);
+    @Get(value = "/stream", produces = MediaType.APPLICATION_JSON_STREAM)
+    public Flowable<Battleground> battlegroundStream() {
+        return battleground.getObservable().toFlowable(BackpressureStrategy.DROP);
     }
 
     @Post(value = "/ships", produces = MediaType.APPLICATION_JSON)

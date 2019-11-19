@@ -37,7 +37,7 @@ public class BattlegroundsEndpoint extends BattlegroundsGrpc.BattlegroundsImplBa
 
     @Override
     public void streamState(Empty request, StreamObserver<StateReply> responseObserver) {
-        battleground.getObservableShips().subscribe(new Observer<ArrayList<Ship>>() {
+        battleground.getObservable().subscribe(new Observer<Battleground>() {
             Disposable disposable;
 
             @Override
@@ -46,9 +46,10 @@ public class BattlegroundsEndpoint extends BattlegroundsGrpc.BattlegroundsImplBa
             }
 
             @Override
-            public void onNext(ArrayList<Ship> t) {
+            public void onNext(Battleground t) {
                 try {
-                    responseObserver.onNext(getStateReply(t));
+                    // TODO: FIX ME AGAIN!
+                    // responseObserver.onNext(getStateReply(t));
                 } catch (Exception e) {
                     // was probably completed already; dispose the observable!
                     if (this.disposable != null && this.disposable.isDisposed() == false) {

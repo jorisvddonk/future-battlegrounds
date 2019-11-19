@@ -9,6 +9,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 import javax.vecmath.Vector2d;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.micronaut.scheduling.annotation.Scheduled;
 import io.reactivex.subjects.PublishSubject;
 
@@ -16,17 +18,21 @@ import io.reactivex.subjects.PublishSubject;
 public class Battleground {
     private ArrayList<Ship> ships = new ArrayList<>();
     private ArrayList<Bullet> bullets = new ArrayList<>();
+    private PublishSubject<Battleground> observable;
     private double timestamp = 0;
     private Random random = new Random();
 
     @PostConstruct
     public void initialize() {
-        observableShips = PublishSubject.create();
-        observableStage = PublishSubject.create();
+        observable = PublishSubject.create();
     }
 
     public ArrayList<Ship> getShips() {
         return ships;
+    }
+
+    public ArrayList<Bullet> getBullets() {
+        return bullets;
     }
 
     public void setShips(final ArrayList<Ship> ships) {
@@ -34,37 +40,13 @@ public class Battleground {
     }
 
     private void tick(final double seconds) {
-        getShips().forEach(ship -> ship.tick(seconds));
+        ships.forEach(ship -> ship.tick(seconds));
+        bullets.forEach(bullet -> bullet.tick(seconds));
+
         timestamp = timestamp + seconds;
-    }
 
-    public class Stage {
-        public final ArrayList<Ship> ships;
-        public final double timestamp;
-
-        Stage(final ArrayList<Ship> ships, final double timestamp) {
-            this.ships = ships;
-            this.timestamp = timestamp;
-        }
-
-        /**
-         * @return the ships
-         */
-        public ArrayList<Ship> getShips() {
-            return ships;
-        }
-
-        /**
-         * @return the timestamp
-         */
-        public double getTimestamp() {
-            return timestamp;
-        }
-    }
-
-    public Stage getStage() {
-        // todo: improve perf by not returning an new object every time?
-        return new Stage(this.getShips(), this.getTimestampMax());
+        ships.removeIf(ship -> ship.lifetime <= 0 || ship.getHull() <= 0);
+        bullets.removeIf(bullet -> bullet.lifetime <= 0);
     }
 
     public Ship addShip() {
@@ -94,17 +76,13 @@ public class Battleground {
 
     @Scheduled(fixedDelay = "20ms")
     void autoTick() {
-        this.tick(0.1);
-        observableShips.onNext(this.getShips());
-        observableStage.onNext(this.getStage());
+        this.tick(0.02);
+        observable.onNext(this);
     }
 
-    public PublishSubject<ArrayList<Ship>> getObservableShips() {
-        return observableShips;
-    }
-
-    public PublishSubject<Stage> getObservableStage() {
-        return observableStage;
+    @JsonIgnore
+    public PublishSubject<Battleground> getObservable() {
+        return observable;
     }
 
     /**
@@ -117,6 +95,7 @@ public class Battleground {
     /**
      * @return the timestamp plus the tick rate
      */
+    @JsonIgnore
     public double getTimestampMax() {
         return timestamp + 0.2;
     }
