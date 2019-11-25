@@ -30,7 +30,7 @@ public class BattlegroundsEndpoint extends BattlegroundsGrpc.BattlegroundsImplBa
                         .setRotationVector(futurebattlegroundsRPC.Vector2d.newBuilder()
                                 .setX(ship.getRotationVector().getX()).setY(ship.getRotationVector().getY()).build())
                         .setBattery(ship.getBattery()).setHull(ship.getHull()).setIFF(ship.getIFF())
-                        .setRemainingLifetime(ship.getRemainingLifetime()).build()));
+                        .setUUID(ship.getUUID().toString()).setRemainingLifetime(ship.getRemainingLifetime()).build()));
 
         battleground.getBullets().forEach(bullet -> reply.addBullets(futurebattlegroundsRPC.Bullet.newBuilder()
                 .setPosition(futurebattlegroundsRPC.Vector2d.newBuilder().setX(bullet.getPosition().getX())

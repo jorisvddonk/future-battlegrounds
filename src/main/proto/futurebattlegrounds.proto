@@ -37,6 +37,7 @@ message Ship {
     string IFF = 5;
     double hull = 6;
     double battery = 7;
+    string UUID = 8;
 }
 
 message Bullet {
