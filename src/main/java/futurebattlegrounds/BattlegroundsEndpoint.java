@@ -3,6 +3,8 @@ package futurebattlegrounds;
 import javax.inject.Singleton;
 import futurebattlegroundsRPC.BattlegroundsGrpc;
 import futurebattlegroundsRPC.Empty;
+import futurebattlegroundsRPC.ShipSpawnReply;
+import futurebattlegroundsRPC.ShipSpawnRequest;
 import io.grpc.stub.StreamObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -83,5 +85,16 @@ public class BattlegroundsEndpoint extends BattlegroundsGrpc.BattlegroundsImplBa
                 responseObserver.onCompleted();
             }
         });
+    }
+
+    @Override
+    public void spawnShip(ShipSpawnRequest request, StreamObserver<ShipSpawnReply> responseObserver) {
+        futurebattlegroundsRPC.ShipSpawnReply.Builder reply = futurebattlegroundsRPC.ShipSpawnReply.newBuilder();
+        Ship s = battleground.createShip();
+        s.setIFF(request.getIFF());
+        battleground.addShip(s);
+        reply.setUUID(s.getUUID().toString());
+        responseObserver.onNext(reply.build());
+        responseObserver.onCompleted();
     }
 }

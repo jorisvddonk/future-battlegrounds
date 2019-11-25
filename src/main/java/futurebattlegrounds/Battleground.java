@@ -49,7 +49,7 @@ public class Battleground {
         bullets.removeIf(bullet -> bullet.lifetime <= 0);
     }
 
-    public Ship addShip() {
+    public Ship createShip() {
         final Ship ship = new Ship(this, null);
         final int r = random.nextInt(360);
         final int d = 500;
@@ -57,8 +57,13 @@ public class Battleground {
         ship.setPosition(v);
         v.scale(-1);
         ship.setRotation(v);
-        this.getShips().add(ship);
         return ship;
+    }
+
+    public Ship addShip() {
+        Ship s = this.createShip();
+        this.getShips().add(s);
+        return s;
     }
 
     public Ship addShip(final Ship ship) {

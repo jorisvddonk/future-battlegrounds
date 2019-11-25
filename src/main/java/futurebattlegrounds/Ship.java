@@ -7,7 +7,7 @@ import java.util.UUID;
 import javax.vecmath.Vector2d;
 
 public class Ship extends BaseMovable {
-    private final String IFF;
+    private String IFF;
     private final UUID UUID;
     private final Vector2d thrust = new Vector2d(0, 1);
     private ShipActionState actionState;
@@ -109,6 +109,10 @@ public class Ship extends BaseMovable {
 
     public double getBattery() {
         return this.shipState.getBattery();
+    }
+
+    protected void setIFF(String IFF) {
+        this.IFF = IFF;
     }
 
 }
