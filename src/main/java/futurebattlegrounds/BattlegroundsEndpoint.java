@@ -1,8 +1,13 @@
 package futurebattlegrounds;
 
+import java.util.Optional;
+
 import javax.inject.Singleton;
+
+import futurebattlegroundsRPC.BaseReply;
 import futurebattlegroundsRPC.BattlegroundsGrpc;
 import futurebattlegroundsRPC.Empty;
+import futurebattlegroundsRPC.ShipActionStateRequest;
 import futurebattlegroundsRPC.ShipSpawnReply;
 import futurebattlegroundsRPC.ShipSpawnRequest;
 import io.grpc.stub.StreamObserver;
@@ -94,6 +99,26 @@ public class BattlegroundsEndpoint extends BattlegroundsGrpc.BattlegroundsImplBa
         s.setIFF(request.getIFF());
         battleground.addShip(s);
         reply.setUUID(s.getUUID().toString());
+        responseObserver.onNext(reply.build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void setActionState(ShipActionStateRequest request, StreamObserver<BaseReply> responseObserver) {
+        Optional<Ship> ship = battleground.getShip(request.getUUID());
+        futurebattlegroundsRPC.BaseReply.Builder reply = futurebattlegroundsRPC.BaseReply.newBuilder();
+        if (ship.isPresent()) {
+            try {
+                ShipActionState s = new ShipActionState(request.getThrust(), request.getRotate(),
+                        request.getShooting());
+                ship.get().setActionState(s);
+                reply.setOK(true);
+            } catch (Exception e) {
+                reply.setOK(false);
+            }
+        } else {
+            reply.setOK(false);
+        }
         responseObserver.onNext(reply.build());
         responseObserver.onCompleted();
     }

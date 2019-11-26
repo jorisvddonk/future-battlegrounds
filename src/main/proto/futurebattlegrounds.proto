@@ -12,6 +12,7 @@ service Battlegrounds {
     rpc streamBattleground (Empty) returns (stream Battleground) {}
 
     rpc spawnShip (ShipSpawnRequest) returns (ShipSpawnReply) {}
+    rpc setActionState (ShipActionStateRequest) returns (BaseReply) {}
 }
 
 message ShipSpawnRequest {
@@ -20,6 +21,17 @@ message ShipSpawnRequest {
 
 message ShipSpawnReply {
     string UUID = 1;
+}
+
+message ShipActionStateRequest {
+    string UUID = 1;
+    float thrust = 2;
+    float rotate = 3;
+    bool shooting = 4;
+}
+
+message BaseReply {
+    bool OK = 1;
 }
 
 message Empty {}
