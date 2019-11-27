@@ -12,7 +12,7 @@ public class BaseMovable implements Movable, HasLifetime {
     this.position = new Vector2d(0, 0);
     this.movementVector = new Vector2d(0, 0);
     this.rotationVector = new Vector2d(0, 1);
-    this.keepAlive();
+    this.lifetime = 5;
   }
 
   @Override
