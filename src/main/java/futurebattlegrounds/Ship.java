@@ -16,6 +16,7 @@ public class Ship extends BaseMovable {
 
     public Ship(Battleground battleground, final String IFF) {
         super();
+        this.keepAlive();
         this.battleground = battleground;
         if (IFF != null) {
             this.IFF = IFF;
@@ -89,6 +90,7 @@ public class Ship extends BaseMovable {
 
     public void setActionState(ShipActionState actionState) {
         this.actionState = actionState;
+        this.keepAlive();
     }
 
     public boolean isThrusting() {
